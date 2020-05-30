@@ -77,7 +77,9 @@ public class Bullet {
         if(rectangle1.intersects(rectangle2)){
             tank.die();
             this.die();
-            tf.expoldes.add(new Expolde(x,y,tf));
+            int ex = tank.getX() + Tank.WIDTH/2 - Expolde.WIDTH/2;
+            int ey = tank.getY() + Tank.HEIGHT/2 - Expolde.HEIGHT/2;
+            tf.expoldes.add(new Expolde(ex,ey,tf));
         }
     }
 
