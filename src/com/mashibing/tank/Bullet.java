@@ -10,12 +10,22 @@ public class Bullet {
     private Dir dir;
     public boolean living = true;
     private TankFrame tf = null;
+    private Group group = Group.BAD;
 
-    public Bullet(int x, int y, Dir dir,TankFrame tf) {
+    public Bullet(int x, int y, Dir dir,Group group,TankFrame tf) {
         this.x = x;
         this.y = y;
         this.dir = dir;
+        this.group = group;
         this.tf = tf;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 
     public void paint(Graphics g) {
@@ -59,11 +69,15 @@ public class Bullet {
     }
 
     public void collideWith(Tank tank) {
+        if(this.group ==tank.getGroup()) return;
+
+        //todo new 的对象有点多
         Rectangle rectangle1 = new Rectangle(x,y,WIDTH,HEIGHT);
         Rectangle rectangle2 = new Rectangle(tank.getX(),tank.getY(),Tank.WIDTH,Tank.HEIGHT);
         if(rectangle1.intersects(rectangle2)){
             tank.die();
             this.die();
+            tf.expoldes.add(new Expolde(x,y,tf));
         }
     }
 

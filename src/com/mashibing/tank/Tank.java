@@ -3,21 +3,33 @@ package com.mashibing.tank;
 import jdk.nashorn.internal.objects.annotations.Setter;
 
 import java.awt.*;
+import java.util.Random;
+
 public class Tank {
     private int x,y;
     private Dir dir = Dir.DOWN;
-    private static final int SPEED = 10;
-    private boolean moving = false;
+    private static final int SPEED = 1;
+    private boolean moving = true;
     private TankFrame tf = null;
     public static final int WIDTH=ResourceMgr.tankU.getWidth();
     public static final int HEIGHT=ResourceMgr.tankU.getHeight();
     private boolean living = true;
-
-    public Tank(int x, int y, Dir dir,TankFrame tf) {
+    private Random random = new Random();
+    private Group group = Group.BAD;
+    public Tank(int x, int y, Dir dir,Group group,TankFrame tf) {
         this.x = x;
         this.y = y;
         this.dir = dir;
+        this.group = group;
         this.tf = tf;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 
     public int getX() {
@@ -97,13 +109,16 @@ public class Tank {
                 y+= SPEED;
                 break;
         }
+        if(random.nextInt(10) > 8 && group.equals(Group.BAD)){
+            this.fire();
+        }
     }
 
     public void fire() {
         int bX = this.x + Tank.WIDTH/2 - Bullet.WIDTH/2;
         int bY = this.y + Tank.HEIGHT/2 - Bullet.HEIGHT/2;
 
-        tf.bulletList.add(new Bullet(bX,bY,dir,tf));
+        tf.bulletList.add(new Bullet(bX,bY,dir,this.group,tf));
     }
 
     public void die() {
