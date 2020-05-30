@@ -5,13 +5,15 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TankFrame extends Frame {
-    int x =200,y=200;
-    Dir dir = Dir.DOWN;
-    private static final int SPEED = 10;
+    Tank mytank = new Tank(200,200,Dir.DOWN,this);
+    List<Bullet> bulletList = new ArrayList<>();
+    static final int GAME_WIDTH = 800, GAME_HEIGHT = 600;
     public TankFrame(){
-        setSize(800,600);
+        setSize(GAME_WIDTH,GAME_HEIGHT);
         setResizable(false);
         setTitle("tank war");
         setVisible(true);
@@ -24,22 +26,30 @@ public class TankFrame extends Frame {
         });
     }
 
+    Image offScreenImage = null;
+
+    @Override
+    public void update(Graphics g) {
+        if (offScreenImage == null) {
+            offScreenImage = this.createImage(GAME_WIDTH, GAME_HEIGHT);
+        }
+        Graphics gOffScreen = offScreenImage.getGraphics();
+        Color c = gOffScreen.getColor();
+        gOffScreen.setColor(Color.BLACK);
+        gOffScreen.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+        gOffScreen.setColor(c);
+        paint(gOffScreen);
+        g.drawImage(offScreenImage, 0, 0, null);
+    }
+
     @Override
     public void paint(Graphics g) {
-        g.fillRect(x,y,50,50);
-        switch (dir){
-            case LEFT:
-                x-= SPEED;
-                break;
-            case UP:
-                y-= SPEED;
-                break;
-            case RIGHT:
-                x+= SPEED;
-                break;
-            case DOWN:
-                y+= SPEED;
-                break;
+        Color c = g.getColor();
+        g.setColor(Color.white);
+        g.drawString("子弹的数量:"+bulletList.size(),10,60);
+        mytank.paint(g);
+        for (int i = 0; i < bulletList.size(); i++) {
+            bulletList.get(i).paint(g);
         }
     }
 
@@ -71,10 +81,16 @@ public class TankFrame extends Frame {
         }
 
         private void setMainTankDir() {
-            if(bL) dir = Dir.LEFT;
-            if(bU) dir = Dir.UP;
-            if(bR) dir = Dir.RIGHT;
-            if(bD) dir = Dir.DOWN;
+            if(!bL && !bU && !bR && !bD){
+                mytank.setMoving(false);
+            }else {
+                mytank.setMoving(true);
+                if(bL) mytank.setDir(Dir.LEFT);
+                if(bU) mytank.setDir(Dir.UP);
+                if(bR) mytank.setDir(Dir.RIGHT);
+                if(bD) mytank.setDir(Dir.DOWN);
+            }
+
         }
 
         @Override
@@ -92,6 +108,9 @@ public class TankFrame extends Frame {
                     break;
                 case KeyEvent.VK_DOWN:
                     bD=false;
+                    break;
+                case KeyEvent.VK_CONTROL:
+                    mytank.fire();
                     break;
                 default:
                     break;
