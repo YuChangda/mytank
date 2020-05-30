@@ -6,6 +6,7 @@ import java.awt.*;
 import java.util.Random;
 
 public class Tank {
+    public Rectangle rec = new Rectangle();
     private int x,y;
     private Dir dir = Dir.DOWN;
     private static final int SPEED = 3;
@@ -22,6 +23,10 @@ public class Tank {
         this.dir = dir;
         this.group = group;
         this.tf = tf;
+        rec.x = this.x;
+        rec.y = this.y;
+        rec.width = WIDTH;
+        rec.height = HEIGHT;
     }
 
     public Group getGroup() {
@@ -109,6 +114,8 @@ public class Tank {
                 y+= SPEED;
                 break;
         }
+
+
         if(random.nextInt(100) > 95 && group.equals(Group.BAD)){
             this.fire();
         }
@@ -116,6 +123,9 @@ public class Tank {
             randomDir();
         }
         boundsCheck();
+        //update rec
+        rec.x = x;
+        rec.y = y;
     }
     private void boundsCheck() {
         if (this.x < 2) x = 2;

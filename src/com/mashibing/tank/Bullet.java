@@ -11,6 +11,7 @@ public class Bullet {
     public boolean living = true;
     private TankFrame tf = null;
     private Group group = Group.BAD;
+    Rectangle rec = new Rectangle();
 
     public Bullet(int x, int y, Dir dir,Group group,TankFrame tf) {
         this.x = x;
@@ -18,6 +19,10 @@ public class Bullet {
         this.dir = dir;
         this.group = group;
         this.tf = tf;
+        rec.x = this.x;
+        rec.y = this.y;
+        rec.width = WIDTH;
+        rec.height = HEIGHT;
     }
 
     public Group getGroup() {
@@ -63,6 +68,9 @@ public class Bullet {
                 y+= SPEED;
                 break;
         }
+        //update rec
+        rec.x = x;
+        rec.y = y;
         if(x<0 || y<0 || x> TankFrame.GAME_WIDTH || y> TankFrame.GAME_HEIGHT){
             living = false;
         }
@@ -72,9 +80,7 @@ public class Bullet {
         if(this.group ==tank.getGroup()) return;
 
         //todo new 的对象有点多
-        Rectangle rectangle1 = new Rectangle(x,y,WIDTH,HEIGHT);
-        Rectangle rectangle2 = new Rectangle(tank.getX(),tank.getY(),Tank.WIDTH,Tank.HEIGHT);
-        if(rectangle1.intersects(rectangle2)){
+        if(rec.intersects(tank.rec)){
             tank.die();
             this.die();
             int ex = tank.getX() + Tank.WIDTH/2 - Expolde.WIDTH/2;
