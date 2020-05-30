@@ -6,11 +6,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class TankFrame extends Frame {
-    Tank mytank = new Tank(200,200,Dir.DOWN,this);
+    Tank mytank = new Tank(200,400,Dir.DOWN,this);
     List<Bullet> bulletList = new ArrayList<>();
+    List<Tank> tanks = new ArrayList<>();
     static final int GAME_WIDTH = 800, GAME_HEIGHT = 600;
     public TankFrame(){
         setSize(GAME_WIDTH,GAME_HEIGHT);
@@ -47,10 +49,25 @@ public class TankFrame extends Frame {
         Color c = g.getColor();
         g.setColor(Color.white);
         g.drawString("子弹的数量:"+bulletList.size(),10,60);
+        g.drawString("敌人的数量:"+tanks.size(),10,80);
         mytank.paint(g);
         for (int i = 0; i < bulletList.size(); i++) {
             bulletList.get(i).paint(g);
         }
+        for (int i = 0; i < tanks.size(); i++) {
+            tanks.get(i).paint(g);
+        }
+        for (int i = 0; i < bulletList.size(); i++) {
+            for (int j = 0; j < tanks.size(); j++) {
+                bulletList.get(i).collideWith(tanks.get(j));
+            }
+        }
+
+
+//        for(Iterator<Bullet> it=bulletList.iterator();it.hasNext(); ){
+//            Bullet next = it.next();
+//            if(!next.live) it.remove();
+//        }
     }
 
     class myKeyListener extends KeyAdapter{

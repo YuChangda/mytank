@@ -9,12 +9,31 @@ public class Tank {
     private static final int SPEED = 10;
     private boolean moving = false;
     private TankFrame tf = null;
+    public static final int WIDTH=ResourceMgr.tankU.getWidth();
+    public static final int HEIGHT=ResourceMgr.tankU.getHeight();
+    private boolean living = true;
 
     public Tank(int x, int y, Dir dir,TankFrame tf) {
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.tf = tf;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 
     public TankFrame getTf() {
@@ -42,10 +61,23 @@ public class Tank {
     }
 
     public void paint(Graphics g) {
-        Color c = g.getColor();
-        g.setColor(Color.yellow);
-        g.fillRect(x,y,50,50);
-        g.setColor(c);
+        if(!living) {
+            tf.tanks.remove(this);
+        }
+        switch (dir){
+            case LEFT:
+                g.drawImage(ResourceMgr.tankL,x,y,null);
+                break;
+            case UP:
+                g.drawImage(ResourceMgr.tankU,x,y,null);
+                break;
+            case DOWN:
+                g.drawImage(ResourceMgr.tankD,x,y,null);
+                break;
+            case RIGHT:
+                g.drawImage(ResourceMgr.tankR,x,y,null);
+                break;
+        }
         move();
     }
 
@@ -68,6 +100,13 @@ public class Tank {
     }
 
     public void fire() {
-        tf.bulletList.add(new Bullet(x,y,dir,tf));
+        int bX = this.x + Tank.WIDTH/2 - Bullet.WIDTH/2;
+        int bY = this.y + Tank.HEIGHT/2 - Bullet.HEIGHT/2;
+
+        tf.bulletList.add(new Bullet(bX,bY,dir,tf));
+    }
+
+    public void die() {
+        this.living = false;
     }
 }

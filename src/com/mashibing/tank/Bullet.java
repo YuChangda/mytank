@@ -3,11 +3,12 @@ package com.mashibing.tank;
 import java.awt.*;
 
 public class Bullet {
-    private static final int SPEED = 5;
-    private static final int WIDTH=20,HEIGHT=20;
+    private static final int SPEED = 10;
+    public static final int WIDTH=ResourceMgr.bulletD.getWidth();
+    public static final int HEIGHT=ResourceMgr.bulletD.getHeight();
     private int x,y;
     private Dir dir;
-    private boolean live = true;
+    public boolean living = true;
     private TankFrame tf = null;
 
     public Bullet(int x, int y, Dir dir,TankFrame tf) {
@@ -18,13 +19,23 @@ public class Bullet {
     }
 
     public void paint(Graphics g) {
-        if(!live){
+        if(!living){
             tf.bulletList.remove(this);
         }
-        Color c = g.getColor();
-        g.setColor(Color.red);
-        g.fillOval(x,y,WIDTH,HEIGHT);
-        g.setColor(c);
+        switch (dir){
+            case LEFT:
+                g.drawImage(ResourceMgr.bulletL,x,y,null);
+                break;
+            case UP:
+                g.drawImage(ResourceMgr.bulletU,x,y,null);
+                break;
+            case DOWN:
+                g.drawImage(ResourceMgr.bulletD,x,y,null);
+                break;
+            case RIGHT:
+                g.drawImage(ResourceMgr.bulletR,x,y,null);
+                break;
+        }
         move();
     }
     private void move() {
@@ -43,7 +54,20 @@ public class Bullet {
                 break;
         }
         if(x<0 || y<0 || x> TankFrame.GAME_WIDTH || y> TankFrame.GAME_HEIGHT){
-            live = false;
+            living = false;
         }
+    }
+
+    public void collideWith(Tank tank) {
+        Rectangle rectangle1 = new Rectangle(x,y,WIDTH,HEIGHT);
+        Rectangle rectangle2 = new Rectangle(tank.getX(),tank.getY(),Tank.WIDTH,Tank.HEIGHT);
+        if(rectangle1.intersects(rectangle2)){
+            tank.die();
+            this.die();
+        }
+    }
+
+    private void die() {
+        this.living = false;
     }
 }
