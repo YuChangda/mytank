@@ -23,6 +23,8 @@ public class Bullet {
         rec.y = this.y;
         rec.width = WIDTH;
         rec.height = HEIGHT;
+
+        tf.bulletList.add(this);
     }
 
     public Group getGroup() {

@@ -1,5 +1,7 @@
 package com.mashibing.tank;
 
+import com.mashibing.tank.strategy.DefaultFireStrategy;
+import com.mashibing.tank.strategy.FireStrategy;
 import jdk.nashorn.internal.objects.annotations.Setter;
 
 import java.awt.*;
@@ -7,8 +9,8 @@ import java.util.Random;
 
 public class Tank {
     public Rectangle rec = new Rectangle();
-    private int x,y;
-    private Dir dir = Dir.DOWN;
+    public int x,y;
+    public Dir dir = Dir.DOWN;
     private static final int SPEED = 3;
     private boolean moving = true;
     private TankFrame tf = null;
@@ -16,7 +18,8 @@ public class Tank {
     public static final int HEIGHT=ResourceMgr.goodTankU.getHeight();
     private boolean living = true;
     private Random random = new Random();
-    private Group group = Group.BAD;
+    public Group group = Group.BAD;
+    FireStrategy fs;
     public Tank(int x, int y, Dir dir,Group group,TankFrame tf) {
         this.x = x;
         this.y = y;
@@ -27,6 +30,19 @@ public class Tank {
         rec.y = this.y;
         rec.width = WIDTH;
         rec.height = HEIGHT;
+
+        if (group == Group.GOOD) {
+            String goodFSName = (String) PropertyMgr.get("goodFS");
+
+            try {
+                fs = (FireStrategy) Class.forName(goodFSName).getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            fs = new DefaultFireStrategy();
+        }
     }
 
     public Group getGroup() {
@@ -139,10 +155,11 @@ public class Tank {
     }
 
     public void fire() {
-        int bX = this.x + Tank.WIDTH/2 - Bullet.WIDTH/2;
-        int bY = this.y + Tank.HEIGHT/2 - Bullet.HEIGHT/2;
-
-        tf.bulletList.add(new Bullet(bX,bY,dir,this.group,tf));
+//        int bX = this.x + Tank.WIDTH/2 - Bullet.WIDTH/2;
+//        int bY = this.y + Tank.HEIGHT/2 - Bullet.HEIGHT/2;
+//
+//        tf.bulletList.add(new Bullet(bX,bY,dir,this.group,tf));
+        fs.fire(this);
     }
 
     public void die() {
