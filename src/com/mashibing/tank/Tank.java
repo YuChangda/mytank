@@ -1,22 +1,25 @@
 package com.mashibing.tank;
 
-import jdk.nashorn.internal.objects.annotations.Setter;
+
+import com.mashibing.tank.abstractfactory.BaseTank;
 
 import java.awt.*;
+import java.util.Base64;
 import java.util.Random;
 
-public class Tank {
-    public Rectangle rec = new Rectangle();
-    private int x,y;
-    private Dir dir = Dir.DOWN;
+public class Tank extends BaseTank {
+//    public Rectangle rec = new Rectangle();
+    int x,y;
+    Dir dir = Dir.DOWN;
     private static final int SPEED = 3;
     private boolean moving = true;
-    private TankFrame tf = null;
+    TankFrame tf = null;
     public static final int WIDTH=ResourceMgr.goodTankU.getWidth();
     public static final int HEIGHT=ResourceMgr.goodTankU.getHeight();
     private boolean living = true;
     private Random random = new Random();
-    private Group group = Group.BAD;
+//    Group group = Group.BAD;
+    FireStrategy fs;
     public Tank(int x, int y, Dir dir,Group group,TankFrame tf) {
         this.x = x;
         this.y = y;
@@ -27,8 +30,20 @@ public class Tank {
         rec.y = this.y;
         rec.width = WIDTH;
         rec.height = HEIGHT;
+
+        if(group == Group.GOOD){
+            String goodfs = (String) PropertyMgr.get("goodfs");
+            try {
+                fs = (FireStrategy) Class.forName(goodfs).getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else {
+            fs = new DefaultFireStrategy();
+        }
     }
 
+    @Override
     public Group getGroup() {
         return group;
     }
@@ -77,6 +92,7 @@ public class Tank {
         this.dir = dir;
     }
 
+    @Override
     public void paint(Graphics g) {
         if(!living) {
             tf.tanks.remove(this);
@@ -139,10 +155,12 @@ public class Tank {
     }
 
     public void fire() {
-        int bX = this.x + Tank.WIDTH/2 - Bullet.WIDTH/2;
-        int bY = this.y + Tank.HEIGHT/2 - Bullet.HEIGHT/2;
+        fs.fire(this);
 
-        tf.bulletList.add(new Bullet(bX,bY,dir,this.group,tf));
+//        int bX = this.x + Tank.WIDTH/2 - Bullet.WIDTH/2;
+//        int bY = this.y + Tank.HEIGHT/2 - Bullet.HEIGHT/2;
+//
+//        tf.bulletList.add(new Bullet(bX,bY,dir,this.group,tf));
     }
 
     public void die() {

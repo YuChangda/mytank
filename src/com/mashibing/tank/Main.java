@@ -10,7 +10,7 @@ public class Main {
         int tankCount = Integer.valueOf((String) PropertyMgr.get("initTankCount"));
         //初始化地方坦克
         for (int i = 0; i < tankCount; i++) {
-            frame.tanks.add(new Tank(50+i*80,200,Dir.DOWN,Group.BAD,frame));
+            frame.tanks.add(frame.gf.createTank(50+i*80,200,Dir.DOWN,Group.BAD,frame));
         }
         while (true){
             Thread.sleep(50);

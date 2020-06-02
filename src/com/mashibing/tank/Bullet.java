@@ -1,8 +1,12 @@
 package com.mashibing.tank;
 
+import com.mashibing.tank.abstractfactory.BaseBullet;
+import com.mashibing.tank.abstractfactory.BaseExplode;
+import com.mashibing.tank.abstractfactory.BaseTank;
+
 import java.awt.*;
 
-public class Bullet {
+public class Bullet extends BaseBullet {
     private static final int SPEED = 10;
     public static final int WIDTH=ResourceMgr.bulletD.getWidth();
     public static final int HEIGHT=ResourceMgr.bulletD.getHeight();
@@ -23,6 +27,8 @@ public class Bullet {
         rec.y = this.y;
         rec.width = WIDTH;
         rec.height = HEIGHT;
+
+        tf.bulletList.add(this);
     }
 
     public Group getGroup() {
@@ -76,16 +82,16 @@ public class Bullet {
         }
     }
 
-    public void collideWith(Tank tank) {
+    public void collideWith(BaseTank tank) {
         if(this.group ==tank.getGroup()) return;
-
+//        System.out.println(tank.rec);
         //todo new 的对象有点多
         if(rec.intersects(tank.rec)){
             tank.die();
             this.die();
             int ex = tank.getX() + Tank.WIDTH/2 - Expolde.WIDTH/2;
             int ey = tank.getY() + Tank.HEIGHT/2 - Expolde.HEIGHT/2;
-            tf.expoldes.add(new Expolde(ex,ey,tf));
+            tf.expoldes.add(tf.gf.createExplode(ex,ey,tf));
         }
     }
 
