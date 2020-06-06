@@ -2,7 +2,7 @@ package com.mashibing.tank;
 
 import java.awt.*;
 
-public class Bullet {
+public class Bullet extends GameObject{
     private static final int SPEED = 10;
     public static final int WIDTH=ResourceMgr.bulletD.getWidth();
     public static final int HEIGHT=ResourceMgr.bulletD.getHeight();
@@ -11,7 +11,7 @@ public class Bullet {
     public boolean living = true;
     private GameModel gm = null;
     private Group group = Group.BAD;
-    Rectangle rec = new Rectangle();
+    public Rectangle rec = new Rectangle();
 
     public Bullet(int x, int y, Dir dir,Group group,GameModel gm) {
         this.x = x;
@@ -24,7 +24,7 @@ public class Bullet {
         rec.width = WIDTH;
         rec.height = HEIGHT;
 
-        gm.bulletList.add(this);
+        gm.add(this);
     }
 
     public Group getGroup() {
@@ -37,7 +37,7 @@ public class Bullet {
 
     public void paint(Graphics g) {
         if(!living){
-            gm.bulletList.remove(this);
+            gm.remove(this);
         }
         switch (dir){
             case LEFT:
@@ -78,8 +78,8 @@ public class Bullet {
         }
     }
 
-    public void collideWith(Tank tank) {
-        if(this.group ==tank.getGroup()) return;
+    public boolean collideWith(Tank tank) {
+        if(this.group ==tank.getGroup()) return false;
 
         //todo new 的对象有点多
         if(rec.intersects(tank.rec)){
@@ -87,11 +87,13 @@ public class Bullet {
             this.die();
             int ex = tank.getX() + Tank.WIDTH/2 - Expolde.WIDTH/2;
             int ey = tank.getY() + Tank.HEIGHT/2 - Expolde.HEIGHT/2;
-            gm.expoldes.add(new Expolde(ex,ey, gm));
+            gm.add(new Expolde(ex,ey, gm));
+            return true;
         }
+        return false;
     }
 
-    private void die() {
+    public void die() {
         this.living = false;
     }
 }
