@@ -9,22 +9,22 @@ public class Bullet {
     private int x,y;
     private Dir dir;
     public boolean living = true;
-    private TankFrame tf = null;
+    private GameModel gm = null;
     private Group group = Group.BAD;
     Rectangle rec = new Rectangle();
 
-    public Bullet(int x, int y, Dir dir,Group group,TankFrame tf) {
+    public Bullet(int x, int y, Dir dir,Group group,GameModel gm) {
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.group = group;
-        this.tf = tf;
+        this.gm = gm;
         rec.x = this.x;
         rec.y = this.y;
         rec.width = WIDTH;
         rec.height = HEIGHT;
 
-        tf.bulletList.add(this);
+        gm.bulletList.add(this);
     }
 
     public Group getGroup() {
@@ -37,7 +37,7 @@ public class Bullet {
 
     public void paint(Graphics g) {
         if(!living){
-            tf.bulletList.remove(this);
+            gm.bulletList.remove(this);
         }
         switch (dir){
             case LEFT:
@@ -87,7 +87,7 @@ public class Bullet {
             this.die();
             int ex = tank.getX() + Tank.WIDTH/2 - Expolde.WIDTH/2;
             int ey = tank.getY() + Tank.HEIGHT/2 - Expolde.HEIGHT/2;
-            tf.expoldes.add(new Expolde(ex,ey,tf));
+            gm.expoldes.add(new Expolde(ex,ey, gm));
         }
     }
 
