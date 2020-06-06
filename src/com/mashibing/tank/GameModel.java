@@ -15,21 +15,37 @@ import java.util.concurrent.ForkJoinPool;
  * Created by ycd on 2020/6/6 9:18 上午
  */
 public class GameModel {
-    Tank mytank = new Tank(200,400,Dir.DOWN,Group.GOOD,this);
+    private static final GameModel GAME_MODEL = new GameModel();
+    Tank mytank;
 //    List<Bullet> bulletList = new ArrayList<>();
 //    List<Tank> tanks = new ArrayList<>();
 //    List<Expolde> expoldes = new ArrayList<>();
     ColliderChain chain = new ColliderChain();
     private List<GameObject> objects = new ArrayList<>();
-    Collider collider = new BulletTankCollider();
-    Collider collider2 = new TankTankCollider();
-    public GameModel(){
+
+    static {
+        GAME_MODEL.init();
+    }
+    public static GameModel getInstance(){
+        return GAME_MODEL;
+    }
+    private GameModel(){}
+
+    private void init(){
+        mytank = new Tank(200,400,Dir.DOWN,Group.GOOD);
         int tankCount = Integer.valueOf((String) PropertyMgr.get("initTankCount"));
         //初始化地方坦克
         for (int i = 0; i < tankCount; i++) {
-            objects.add(new Tank(50+i*80,200,Dir.DOWN,Group.BAD,this));
+            new Tank(50+i*80,200,Dir.DOWN,Group.BAD);
         }
+        // 初始化墙
+        add(new Wall(150, 150, 200, 50));
+        add(new Wall(550, 150, 200, 50));
+        add(new Wall(300, 300, 50, 200));
+        add(new Wall(550, 300, 50, 200));
     }
+
+
     public void add(GameObject go){
         this.objects.add(go);
     }

@@ -9,22 +9,20 @@ public class Bullet extends GameObject{
     private int x,y;
     private Dir dir;
     public boolean living = true;
-    private GameModel gm = null;
     private Group group = Group.BAD;
     public Rectangle rec = new Rectangle();
 
-    public Bullet(int x, int y, Dir dir,Group group,GameModel gm) {
+    public Bullet(int x, int y, Dir dir,Group group) {
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.group = group;
-        this.gm = gm;
         rec.x = this.x;
         rec.y = this.y;
         rec.width = WIDTH;
         rec.height = HEIGHT;
 
-        gm.add(this);
+        GameModel.getInstance().add(this);
     }
 
     public Group getGroup() {
@@ -37,7 +35,7 @@ public class Bullet extends GameObject{
 
     public void paint(Graphics g) {
         if(!living){
-            gm.remove(this);
+            GameModel.getInstance().remove(this);
         }
         switch (dir){
             case LEFT:
@@ -76,21 +74,6 @@ public class Bullet extends GameObject{
         if(x<0 || y<0 || x> TankFrame.GAME_WIDTH || y> TankFrame.GAME_HEIGHT){
             living = false;
         }
-    }
-
-    public boolean collideWith(Tank tank) {
-        if(this.group ==tank.getGroup()) return false;
-
-        //todo new 的对象有点多
-        if(rec.intersects(tank.rec)){
-            tank.die();
-            this.die();
-            int ex = tank.getX() + Tank.WIDTH/2 - Expolde.WIDTH/2;
-            int ey = tank.getY() + Tank.HEIGHT/2 - Expolde.HEIGHT/2;
-            gm.add(new Expolde(ex,ey, gm));
-            return true;
-        }
-        return false;
     }
 
     public void die() {

@@ -7,19 +7,18 @@ public class Expolde extends GameObject{
     public static final int HEIGHT=ResourceMgr.explodes[0].getHeight();
     private int x,y;
     public boolean living = true;
-    private GameModel gm = null;
     private int step = 0;
 
-    public Expolde(int x, int y,  GameModel gm) {
+    public Expolde(int x, int y) {
         this.x = x;
         this.y = y;
-        this.gm = gm;
+        GameModel.getInstance().add(this);
     }
 
     public void paint(Graphics g) {
         g.drawImage(ResourceMgr.explodes[step++],x,y,null);
         if(step >= ResourceMgr.explodes.length){
-            gm.remove(this);
+            GameModel.getInstance().remove(this);
         }
     }
 

@@ -10,6 +10,7 @@ import java.util.Random;
 public class Tank extends GameObject {
     public Rectangle rec = new Rectangle();
     public int x, y;
+    public int oldx,oldy;
     public Dir dir = Dir.DOWN;
     private static final int SPEED = 3;
     private boolean moving = true;
@@ -19,14 +20,12 @@ public class Tank extends GameObject {
     private Random random = new Random();
     public Group group = Group.BAD;
     FireStrategy fs;
-    public GameModel gm;
 
-    public Tank(int x, int y, Dir dir, Group group, GameModel gm) {
+    public Tank(int x, int y, Dir dir, Group group) {
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.group = group;
-        this.gm = gm;
         rec.x = this.x;
         rec.y = this.y;
         rec.width = WIDTH;
@@ -44,6 +43,7 @@ public class Tank extends GameObject {
         } else {
             fs = new DefaultFireStrategy();
         }
+        GameModel.getInstance().add(this);
     }
     public Rectangle getRec() {
         return rec;
@@ -90,7 +90,7 @@ public class Tank extends GameObject {
 
     public void paint(Graphics g) {
         if (!living) {
-            gm.remove(this);
+            GameModel.getInstance().remove(this);
         }
         switch (dir) {
             case LEFT:
@@ -110,6 +110,8 @@ public class Tank extends GameObject {
     }
 
     private void move() {
+        oldx = x;
+        oldy = y;
         if (!moving) return;
         switch (dir) {
             case LEFT:
@@ -137,6 +139,11 @@ public class Tank extends GameObject {
         //update rec
         rec.x = x;
         rec.y = y;
+    }
+
+    public void back(){
+        x = oldx;
+        y = oldy;
     }
 
     private void boundsCheck() {
