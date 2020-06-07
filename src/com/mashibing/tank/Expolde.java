@@ -5,7 +5,6 @@ import java.awt.*;
 public class Expolde extends GameObject{
     public static final int WIDTH=ResourceMgr.explodes[0].getWidth();
     public static final int HEIGHT=ResourceMgr.explodes[0].getHeight();
-    private int x,y;
     public boolean living = true;
     private int step = 0;
 
@@ -22,6 +21,15 @@ public class Expolde extends GameObject{
         }
     }
 
+    @Override
+    public int getWidth() {
+        return WIDTH;
+    }
+
+    @Override
+    public int getHeight() {
+        return HEIGHT;
+    }
 
 
 }

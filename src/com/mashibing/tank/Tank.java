@@ -9,7 +9,6 @@ import java.util.Random;
 
 public class Tank extends GameObject {
     public Rectangle rec = new Rectangle();
-    public int x, y;
     public int oldx,oldy;
     public Dir dir = Dir.DOWN;
     private static final int SPEED = 3;
@@ -107,6 +106,16 @@ public class Tank extends GameObject {
                 break;
         }
         move();
+    }
+
+    @Override
+    public int getWidth() {
+        return WIDTH;
+    }
+
+    @Override
+    public int getHeight() {
+        return HEIGHT;
     }
 
     private void move() {
